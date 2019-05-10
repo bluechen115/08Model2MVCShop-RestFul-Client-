@@ -3,6 +3,8 @@ package client.app;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -13,6 +15,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.codehaus.jackson.annotate.JsonValue;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
@@ -65,9 +68,25 @@ public class RestHttpClientApp {
 //		// 5.1 Http Post 방식 Request : JsonSimple lib 사용
 //		RestHttpClientApp.addUserTestPost_JsonSimple();
 		
+//		System.out.println("\n====================================\n");
+//		// 5.2 Http Post 방식 Request : CodeHause lib 사용
+//		RestHttpClientApp.addUserTestPost_Codehaus();
+		
+//		System.out.println("\n====================================\n");
+//		// 6.1 Http Post 방식 Request : JsonSimple lib 사용
+//		RestHttpClientApp.checkDuplicationTestPost_SimpleJson();
+	
+//		System.out.println("\n====================================\n");
+//		// 6.2 Http Post 방식 Request : CodeHaus lib 사용
+//		RestHttpClientApp.checkDuplicationTestPost_Codehaus();
+		
+//		System.out.println("\n====================================\n");
+//		// 7.1 Http Post 방식 Request : JsonSimple lib 사용
+//		RestHttpClientApp.listUserTestPost_JsonSimple();
+		
 		System.out.println("\n====================================\n");
-		// 5.2 Http Post 방식 Request : CodeHause lib 사용
-		RestHttpClientApp.addUserTestPost_Codehaus();
+		// 7.2 Http Post 방식 Request : CodeHaus lib 사용
+		RestHttpClientApp.listUserTestPost_Codehaus();
 	}
 	
 	
@@ -452,6 +471,125 @@ public class RestHttpClientApp {
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		User user = objectMapper.readValue(jsonObj.toJSONString(), User.class);
+		System.out.println(user);
+	}
+	
+	public static void checkDuplicationTestPost_SimpleJson() throws Exception{
+		HttpClient httpClient = new DefaultHttpClient();
+		
+		String url = "http://127.0.0.1:8080/user/json/checkDuplication";
+		HttpPost httpPost = new HttpPost(url);
+		
+		httpPost.setHeader("Accept", "application/json");
+		httpPost.setHeader("Content-Type", "application/json");
+		
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("userId", "admin");
+		
+		HttpEntity httpEntity01 = new StringEntity(jsonObject.toJSONString(), "utf-8");
+		httpPost.setEntity(httpEntity01);
+		
+		HttpResponse httpResponse = httpClient.execute(httpPost);
+		System.out.println(httpResponse);
+		
+		HttpEntity httpEntity = httpResponse.getEntity();
+		InputStream is = httpEntity.getContent();
+		BufferedReader br = new BufferedReader(new InputStreamReader(is, "utf-8"));
+		
+		System.out.println("[ Server 에서 받은 Data 확인 ] ");
+		JSONObject jsonObj = (JSONObject)JSONValue.parse(br);
+		System.out.println(jsonObj);
+		
+		System.out.println(jsonObj.get("userId"));
+	}
+	
+	public static void checkDuplicationTestPost_Codehaus() throws Exception{
+		HttpClient httpClient = new DefaultHttpClient();
+		
+		String url = "http://127.0.0.1:8080/user/json/checkDuplication";
+		
+		HttpPost httpPost = new HttpPost(url);
+		httpPost.setHeader("Accept", "application/json");
+		httpPost.setHeader("Content-Type", "application/json");
+		
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("userId", "admin");
+		
+		HttpEntity httpEntity01 = new StringEntity(jsonObject.toJSONString(), "utf-8");
+		httpPost.setEntity(httpEntity01);
+		
+		HttpResponse httpResponse = httpClient.execute(httpPost);
+		System.out.println(httpResponse);
+		
+		HttpEntity httpEntity = httpResponse.getEntity();
+		InputStream is = httpEntity.getContent();
+		BufferedReader br = new BufferedReader(new InputStreamReader(is, "utf-8"));
+		
+		System.out.println("[ Server 에서 받은 Data 확인 ] ");
+		JSONObject jsonObj = (JSONObject)JSONValue.parse(br);
+		System.out.println(jsonObj);
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		User user = objectMapper.readValue((jsonObj.get("userId")).toString(), User.class);
+		System.out.println(user);
+	}
+	
+	public static void listUserTestPost_JsonSimple() throws Exception{
+		HttpClient httpClient = new DefaultHttpClient();
+		
+		String url = "http://127.0.0.1:8080/user/json/listUser";
+		
+		HttpPost httpPost = new HttpPost(url);
+		httpPost.setHeader("Accept", "application/json");
+		httpPost.setHeader("Content-Type", "application/json");
+		
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("currentPage",1);
+		
+		HttpEntity httpEntity01 = new StringEntity(jsonObject.toJSONString(), "utf-8");
+		httpPost.setEntity(httpEntity01);
+		
+		HttpResponse httpResponse = httpClient.execute(httpPost);
+		System.out.println(httpResponse);
+		
+		HttpEntity httpEntity = httpResponse.getEntity();
+		InputStream is = httpEntity.getContent();
+		BufferedReader br = new BufferedReader(new InputStreamReader(is, "utf-8"));
+		
+		System.out.println("[ Server 에서 받은 Data 확인 ] ");
+		JSONObject jsonObj = (JSONObject)JSONValue.parse(br);
+		System.out.println(jsonObj);
+	}
+	
+	public static void listUserTestPost_Codehaus() throws Exception{
+HttpClient httpClient = new DefaultHttpClient();
+		
+		String url = "http://127.0.0.1:8080/user/json/listUser";
+		
+		HttpPost httpPost = new HttpPost(url);
+		httpPost.setHeader("Accept", "application/json");
+		httpPost.setHeader("Content-Type", "application/json");
+		
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("currentPage",1);
+		
+		HttpEntity httpEntity01 = new StringEntity(jsonObject.toJSONString(), "utf-8");
+		httpPost.setEntity(httpEntity01);
+		
+		HttpResponse httpResponse = httpClient.execute(httpPost);
+		System.out.println(httpResponse);
+		
+		HttpEntity httpEntity = httpResponse.getEntity();
+		InputStream is = httpEntity.getContent();
+		BufferedReader br = new BufferedReader(new InputStreamReader(is, "utf-8"));
+		
+		System.out.println("[ Server 에서 받은 Data 확인 ] ");
+		JSONObject jsonObj = (JSONObject)JSONValue.parse(br);
+		System.out.println(jsonObj);
+		JSONArray jsonArray = (JSONArray)jsonObj.get("list");
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		User user = objectMapper.readValue(jsonArray.get(1).toString(), User.class);
 		System.out.println(user);
 	}
 	
